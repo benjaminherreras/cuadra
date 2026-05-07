@@ -93,15 +93,16 @@ export abstract class BasePDFParser implements IBankParser {
   async parse(fileContent: Buffer, sessionId: string): Promise<TransaccionBancaria[]> {
     let text: string
     // pdf.js has a cold-start race condition on the first call in a fresh process.
-    // One retry after a short delay is enough to let the engine finish initializing.
-    for (let attempt = 0; attempt < 2; attempt++) {
+    // Retry with increasing delays to handle slow cold starts (e.g. Render free tier).
+    const delays = [500, 1500]
+    for (let attempt = 0; attempt <= delays.length; attempt++) {
       try {
         const result = await pdfParse(fileContent)
         text = result.text
         break
       } catch (err) {
-        if (attempt === 0) {
-          await new Promise((r) => setTimeout(r, 200))
+        if (attempt < delays.length) {
+          await new Promise((r) => setTimeout(r, delays[attempt]))
           continue
         }
         throw new InvalidCSVError(`No se pudo leer el PDF ${this.banco}: ${String(err)}`)
