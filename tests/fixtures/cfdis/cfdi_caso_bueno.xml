@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante
+  xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+  xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd"
+  Version="4.0"
+  Serie="A"
+  Folio="12345"
+  Fecha="2026-04-15T10:30:00"
+  Sello="SELLO_DIGITAL_DEMO"
+  FormaPago="04"
+  NoCertificado="00001000000500000000"
+  Certificado="CERTIFICADO_DEMO"
+  SubTotal="12500.00"
+  Moneda="MXN"
+  Total="14500.00"
+  TipoDeComprobante="I"
+  Exportacion="01"
+  MetodoPago="PUE"
+  LugarExpedicion="03100">
+  <cfdi:Emisor Rfc="ODE920729AB7" Nombre="OFFICE DEPOT DE MEXICO SA DE CV" RegimenFiscal="601"/>
+  <cfdi:Receptor Rfc="ABCD800101XYZ" Nombre="JUAN PEREZ LOPEZ" DomicilioFiscalReceptor="03100" RegimenFiscalReceptor="626" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="43211507" NoIdentificacion="LAP-001" Cantidad="1" ClaveUnidad="H87" Unidad="Pieza" Descripcion="Laptop Dell Latitude 5420 i7 16GB 512GB" ValorUnitario="12500.00" Importe="12500.00" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="12500.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2000.00"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="2000.00">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="12500.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2000.00"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="A1B2C3D4-E5F6-7890-ABCD-1234567890AB" FechaTimbrado="2026-04-15T10:31:00" RfcProvCertif="SAT970701NN3" SelloCFD="SELLO_CFD_DEMO" NoCertificadoSAT="00001000000500000000" SelloSAT="SELLO_SAT_DEMO"/>
+  </cfdi:Complemento>
+</cfdi:Comprobante>
