@@ -205,7 +205,7 @@ export default function Protocol() {
         <div className="absolute inset-y-0 right-0 w-24 z-10 pointer-events-none"
           style={{ background: 'linear-gradient(to left, #0D0D12, transparent)' }} />
 
-        <div className="flex gap-0" style={{ animation: 'marquee 28s linear infinite' }}>
+        <div className="flex gap-0 animate-marquee">
           {/* Duplicate 3x for seamless loop at any viewport width */}
           {[...Array(3)].map((_, set) => (
             <div key={set} className="flex items-center gap-0 shrink-0">
@@ -221,12 +221,7 @@ export default function Protocol() {
           ))}
         </div>
 
-        <style>{`
-          @keyframes marquee {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-33.333%); }
-          }
-        `}</style>
+      
       </div>
 
       <div className="max-w-5xl mx-auto px-6">
