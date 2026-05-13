@@ -62,25 +62,10 @@ export default function Protocol() {
       const cards = cardsContainerRef.current?.querySelectorAll('.bank-card')
       if (!cards || cards.length === 0) return
 
-      // Stack cards with scroll-driven animation
-      cards.forEach((card, i) => {
-        const isLast = i === cards.length - 1
-
-        ScrollTrigger.create({
-          trigger: card,
-          start: 'top top+=80',
-          end: isLast ? 'bottom top+=80' : 'bottom top',
-          pin: true,
-          pinSpacing: false,
-        })
-
+      cards.forEach((card) => {
         gsap.fromTo(
           card,
-          {
-            opacity: 0,
-            y: 80,
-            scale: 0.96,
-          },
+          { opacity: 0, y: 60, scale: 0.97 },
           {
             opacity: 1,
             y: 0,
@@ -89,7 +74,7 @@ export default function Protocol() {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 85%',
+              start: 'top 88%',
               once: true,
             },
           }
@@ -126,7 +111,7 @@ export default function Protocol() {
         </div>
 
         {/* Stacking cards */}
-        <div ref={cardsContainerRef} className="space-y-4">
+        <div ref={cardsContainerRef} className="flex flex-col gap-4 pb-32">
           {banks.map((bank, i) => (
             <div
               key={bank.name}
@@ -134,6 +119,8 @@ export default function Protocol() {
               style={{
                 background: `linear-gradient(135deg, ${bank.accent}18 0%, #0D0D0D 60%)`,
                 zIndex: i + 1,
+                position: 'sticky',
+                top: `${80 + i * 24}px`,
               }}
             >
               <div className="p-8 md:p-12 grid md:grid-cols-2 gap-10 items-start">
