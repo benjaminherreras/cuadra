@@ -266,6 +266,52 @@ export async function exportExcel(session: SessionDetail) {
     ws2.getRow(r).height = 18
   })
 
+  // Leyenda de Score
+  const legendRow = 3 + session.matched.length + 1
+  ws2.getRow(legendRow).height = 10 // separador
+
+  const legendData = [
+    { range: '90 – 100', label: 'Alta confianza',  bg: C.green_light,  fg: C.green  },
+    { range: '75 – 89',  label: 'Media confianza', bg: C.yellow_light, fg: C.yellow },
+    { range: '0 – 74',   label: 'Baja confianza',  bg: C.red_light,    fg: C.signal },
+  ]
+  const lr = legendRow + 1
+  ws2.mergeCells(lr, 1, lr, 6)
+  const legendTitle = ws2.getCell(lr, 1)
+  legendTitle.value = 'CÓMO SE CALCULA EL SCORE'
+  legendTitle.font = { name: 'Calibri', bold: true, size: 8, color: { argb: C.muted } }
+  legendTitle.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.offwhite } }
+  legendTitle.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
+  ws2.getRow(lr).height = 16
+
+  legendData.forEach(({ range, label, bg, fg }, i) => {
+    const r = lr + 1 + i
+    // Rango (col 1)
+    const rc = ws2.getCell(r, 1)
+    rc.value = range
+    rc.font = { name: 'Calibri', bold: true, size: 10, color: { argb: fg } }
+    rc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
+    rc.alignment = { horizontal: 'center', vertical: 'middle' }
+    // Etiqueta (col 2-3)
+    ws2.mergeCells(r, 2, r, 3)
+    const lc = ws2.getCell(r, 2)
+    lc.value = label
+    lc.font = { name: 'Calibri', size: 10, color: { argb: C.dark } }
+    lc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.offwhite } }
+    lc.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
+    ws2.getRow(r).height = 18
+  })
+
+  // Ponderación del score
+  const pr = lr + 1 + legendData.length
+  ws2.mergeCells(pr, 1, pr, 6)
+  const pc = ws2.getCell(pr, 1)
+  pc.value = 'Ponderación:  Monto 50%  ·  Descripción del movimiento 30%  ·  Fecha 20%'
+  pc.font = { name: 'Calibri', italic: true, size: 9, color: { argb: C.muted } }
+  pc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C.offwhite } }
+  pc.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
+  ws2.getRow(pr).height = 18
+
   // ── Hoja 3: Sin Conciliar — Banco ─────────────────────────────────────────
   const bankItems = session.unmatchedBankDetail ?? []
   const ws3 = wb.addWorksheet('⚠ Sin Conciliar — Banco', { properties: { tabColor: { argb: C.signal } } })

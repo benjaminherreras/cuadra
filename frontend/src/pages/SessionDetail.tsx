@@ -26,6 +26,27 @@ function ScoreBadge({ score }: { score: number }) {
   )
 }
 
+function ScoreLegend() {
+  return (
+    <div className="px-4 py-3 border-t border-stone-100 bg-stone-50 flex flex-wrap items-center gap-x-6 gap-y-2">
+      <span className="font-mono text-[10px] text-stone-400 uppercase tracking-widest">Score de coincidencia</span>
+      <div className="flex items-center gap-4">
+        {[
+          { range: '90 – 100', label: 'Alta confianza', bg: 'bg-green-100', text: 'text-green-700' },
+          { range: '75 – 89',  label: 'Media confianza', bg: 'bg-yellow-100', text: 'text-yellow-700' },
+          { range: '0 – 74',   label: 'Baja confianza',  bg: 'bg-red-100',   text: 'text-red-700'   },
+        ].map((s) => (
+          <div key={s.range} className="flex items-center gap-1.5">
+            <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-full ${s.bg} ${s.text}`}>{s.range}</span>
+            <span className="font-mono text-[10px] text-stone-400">{s.label}</span>
+          </div>
+        ))}
+      </div>
+      <span className="font-mono text-[10px] text-stone-300 ml-auto">Monto 50 · Descripción 30 · Fecha 20</span>
+    </div>
+  )
+}
+
 function MatchedTable({ items }: { items: MatchedItem[] }) {
   return (
     <div className="overflow-x-auto">
@@ -70,6 +91,7 @@ function MatchedTable({ items }: { items: MatchedItem[] }) {
           ))}
         </tbody>
       </table>
+      <ScoreLegend />
     </div>
   )
 }
