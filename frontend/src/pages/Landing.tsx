@@ -1,5 +1,6 @@
 import Header from '../components/Header'
 import Hero from '../components/Hero'
+import BankMarquee from '../components/BankMarquee'
 import Features from '../components/Features'
 import Philosophy from '../components/Philosophy'
 import Protocol from '../components/Protocol'
@@ -11,6 +12,7 @@ export default function Landing() {
       <Header />
       <main>
         <Hero />
+        <BankMarquee />
         <Features />
         <Philosophy />
         <Protocol />
