@@ -222,11 +222,11 @@ export async function exportExcel(session: SessionDetail) {
   // ── Hoja 2: Conciliados ────────────────────────────────────────────────────
   const ws2 = wb.addWorksheet('✓ Conciliados', { properties: { tabColor: { argb: C.green } } })
   ws2.columns = [
-    { width: 40 }, { width: 16 }, { width: 35 }, { width: 16 }, { width: 16 }, { width: 9 },
+    { width: 5 }, { width: 40 }, { width: 16 }, { width: 35 }, { width: 16 }, { width: 16 }, { width: 9 },
   ]
   ws2.views = [{ state: 'frozen', ySplit: 2 }]
 
-  ws2.mergeCells('A1:F1')
+  ws2.mergeCells('A1:G1')
   const h2 = ws2.getCell('A1')
   h2.value = `✓ Movimientos Conciliados — ${session.banco}  ·  ${fmtDate(session.processedAt)}`
   h2.font = { name: 'Calibri', bold: true, size: 12, color: { argb: C.white } }
@@ -234,19 +234,19 @@ export async function exportExcel(session: SessionDetail) {
   h2.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
   ws2.getRow(1).height = 28
 
-  headerRow(ws2, 2, ['Descripción Banco', 'Monto Banco', 'Emisor CFDI', 'Monto CFDI', 'Monto Esperado', 'Score'], C.dark)
-  ws2.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 6 } }
+  headerRow(ws2, 2, ['#', 'Descripción Banco', 'Monto Banco', 'Emisor CFDI', 'Monto CFDI', 'Monto Esperado', 'Score'], C.dark)
+  ws2.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 7 } }
 
   session.matched.forEach((m, i) => {
     const r = 3 + i
     const isAlt = i % 2 === 1
     const bg = isAlt ? C.row_alt : C.white
     const score = m.score
-
     const scoreBg = score >= 90 ? C.green_light : score >= 75 ? C.yellow_light : C.red_light
     const scoreFg = score >= 90 ? C.green : score >= 75 ? C.yellow : C.signal
 
     const vals: (string | number)[] = [
+      i + 1,
       m.bankDescripcion ?? '—',
       m.bankMonto ?? 0,
       m.cfdiEmisorNombre ?? '—',
@@ -257,11 +257,11 @@ export async function exportExcel(session: SessionDetail) {
     vals.forEach((val, ci) => {
       const c = ws2.getCell(r, ci + 1)
       c.value = val
-      c.font = { name: 'Calibri', size: 10, color: { argb: ci === 5 ? scoreFg : C.dark }, bold: ci === 5 }
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 5 ? scoreBg : bg } }
-      c.alignment = { vertical: 'middle', horizontal: ci >= 1 && ci <= 4 ? 'right' : ci === 5 ? 'center' : 'left' }
+      c.font = { name: 'Calibri', size: 10, color: { argb: ci === 6 ? scoreFg : ci === 0 ? C.muted : C.dark }, bold: ci === 6 }
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 6 ? scoreBg : bg } }
+      c.alignment = { vertical: 'middle', horizontal: ci === 0 ? 'center' : ci >= 2 && ci <= 5 ? 'right' : ci === 6 ? 'center' : 'left' }
       c.border = { bottom: { style: 'hair', color: { argb: 'FFE5E7EB' } } }
-      if (ci >= 1 && ci <= 4) c.numFmt = '"$"#,##0.00'
+      if (ci >= 2 && ci <= 5) c.numFmt = '"$"#,##0.00'
     })
     ws2.getRow(r).height = 18
   })
@@ -316,11 +316,11 @@ export async function exportExcel(session: SessionDetail) {
   const bankItems = session.unmatchedBankDetail ?? []
   const ws3 = wb.addWorksheet('⚠ Sin Conciliar — Banco', { properties: { tabColor: { argb: C.signal } } })
   ws3.columns = [
-    { width: 12 }, { width: 42 }, { width: 16 }, { width: 24 }, { width: 44 },
+    { width: 5 }, { width: 12 }, { width: 42 }, { width: 16 }, { width: 24 }, { width: 44 },
   ]
   ws3.views = [{ state: 'frozen', ySplit: 2 }]
 
-  ws3.mergeCells('A1:E1')
+  ws3.mergeCells('A1:F1')
   const h3 = ws3.getCell('A1')
   h3.value = `⚠ Movimientos Bancarios Sin Conciliar — ${session.banco}`
   h3.font = { name: 'Calibri', bold: true, size: 12, color: { argb: C.white } }
@@ -328,11 +328,11 @@ export async function exportExcel(session: SessionDetail) {
   h3.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
   ws3.getRow(1).height = 28
 
-  headerRow(ws3, 2, ['Fecha', 'Descripción', 'Monto', 'Referencia', '📝 Notas del Contador'], C.dark)
-  ws3.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 5 } }
+  headerRow(ws3, 2, ['#', 'Fecha', 'Descripción', 'Monto', 'Referencia', '📝 Notas del Contador'], C.dark)
+  ws3.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 6 } }
 
   // Columna de notas con fondo amarillo
-  const noteHeaderCell = ws3.getCell(2, 5)
+  const noteHeaderCell = ws3.getCell(2, 6)
   noteHeaderCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBBF24' } }
   noteHeaderCell.font = { name: 'Calibri', bold: true, size: 10, color: { argb: C.dark } }
 
@@ -342,22 +342,22 @@ export async function exportExcel(session: SessionDetail) {
     const bg = isAlt ? C.row_alt : C.white
     const note = getNotes(sid, item.id)
 
-    const vals: (string | number)[] = [item.fecha, item.descripcion, item.monto, item.referencia ?? '', note]
+    const vals: (string | number)[] = [i + 1, item.fecha, item.descripcion, item.monto, item.referencia ?? '', note]
     vals.forEach((val, ci) => {
       const c = ws3.getCell(r, ci + 1)
       c.value = val
-      c.font = { name: 'Calibri', size: 10, color: { argb: C.dark }, italic: ci === 4 }
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 4 ? C.note_bg : bg } }
+      c.font = { name: 'Calibri', size: 10, color: { argb: ci === 0 ? C.muted : C.dark }, italic: ci === 5 }
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 5 ? C.note_bg : bg } }
       c.alignment = {
         vertical: 'middle',
-        horizontal: ci === 2 ? 'right' : 'left',
-        wrapText: ci === 4,
+        horizontal: ci === 0 ? 'center' : ci === 3 ? 'right' : 'left',
+        wrapText: ci === 5,
       }
       c.border = {
         bottom: { style: 'hair', color: { argb: 'FFE5E7EB' } },
-        ...(ci === 4 ? { left: { style: 'thin', color: { argb: C.note_border } } } : {}),
+        ...(ci === 5 ? { left: { style: 'thin', color: { argb: C.note_border } } } : {}),
       }
-      if (ci === 2) c.numFmt = '"$"#,##0.00'
+      if (ci === 3) c.numFmt = '"$"#,##0.00'
     })
     ws3.getRow(r).height = note && note.length > 40 ? 32 : 18
   })
@@ -366,11 +366,11 @@ export async function exportExcel(session: SessionDetail) {
   const cfdiItems = session.unmatchedCFDIDetail ?? []
   const ws4 = wb.addWorksheet('⚠ Sin Conciliar — CFDI', { properties: { tabColor: { argb: C.yellow } } })
   ws4.columns = [
-    { width: 12 }, { width: 38 }, { width: 16 }, { width: 16 }, { width: 16 }, { width: 34 }, { width: 44 },
+    { width: 5 }, { width: 12 }, { width: 38 }, { width: 16 }, { width: 16 }, { width: 16 }, { width: 34 }, { width: 44 },
   ]
   ws4.views = [{ state: 'frozen', ySplit: 2 }]
 
-  ws4.mergeCells('A1:G1')
+  ws4.mergeCells('A1:H1')
   const h4 = ws4.getCell('A1')
   h4.value = `⚠ CFDIs Sin Conciliar — ${session.banco}`
   h4.font = { name: 'Calibri', bold: true, size: 12, color: { argb: C.white } }
@@ -378,11 +378,11 @@ export async function exportExcel(session: SessionDetail) {
   h4.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
   ws4.getRow(1).height = 28
 
-  headerRow(ws4, 2, ['Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID', '📝 Notas del Contador'], C.dark)
-  ws4.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 7 } }
+  headerRow(ws4, 2, ['#', 'Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID', '📝 Notas del Contador'], C.dark)
+  ws4.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 8 } }
 
   // Columna de notas con fondo amarillo
-  const cfdiNoteHeader = ws4.getCell(2, 7)
+  const cfdiNoteHeader = ws4.getCell(2, 8)
   cfdiNoteHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBBF24' } }
   cfdiNoteHeader.font = { name: 'Calibri', bold: true, size: 10, color: { argb: C.dark } }
 
@@ -391,22 +391,22 @@ export async function exportExcel(session: SessionDetail) {
     const isAlt = i % 2 === 1
     const bg = isAlt ? C.row_alt : C.white
     const note = localStorage.getItem(`cuadra_note_cfdi_${sid}_${item.id}`) ?? ''
-    const vals: (string | number)[] = [item.fecha, item.emisorNombre, item.emisorRfc, item.total, item.montoEsperado, item.uuid, note]
+    const vals: (string | number)[] = [i + 1, item.fecha, item.emisorNombre, item.emisorRfc, item.total, item.montoEsperado, item.uuid, note]
     vals.forEach((val, ci) => {
       const c = ws4.getCell(r, ci + 1)
       c.value = val
-      c.font = { name: 'Calibri', size: 10, color: { argb: C.dark }, italic: ci === 6 }
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 6 ? C.note_bg : bg } }
+      c.font = { name: 'Calibri', size: 10, color: { argb: ci === 0 ? C.muted : C.dark }, italic: ci === 7 }
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 7 ? C.note_bg : bg } }
       c.alignment = {
         vertical: 'middle',
-        horizontal: ci >= 3 && ci <= 4 ? 'right' : 'left',
-        wrapText: ci === 6,
+        horizontal: ci === 0 ? 'center' : ci >= 4 && ci <= 5 ? 'right' : 'left',
+        wrapText: ci === 7,
       }
       c.border = {
         bottom: { style: 'hair', color: { argb: 'FFE5E7EB' } },
-        ...(ci === 6 ? { left: { style: 'thin', color: { argb: C.note_border } } } : {}),
+        ...(ci === 7 ? { left: { style: 'thin', color: { argb: C.note_border } } } : {}),
       }
-      if (ci >= 3 && ci <= 4) c.numFmt = '"$"#,##0.00'
+      if (ci >= 4 && ci <= 5) c.numFmt = '"$"#,##0.00'
     })
     ws4.getRow(r).height = note && note.length > 40 ? 32 : 18
   })
@@ -525,16 +525,16 @@ export function exportPDF(session: SessionDetail) {
     doc.text('Movimientos bancarios sin conciliar', 12, 28)
     autoTable(doc, {
       startY: 31,
-      head: [['Fecha', 'Descripción', 'Monto', 'Referencia', 'Notas del contador']],
-      body: bankItems.map((item) => [
-        item.fecha, item.descripcion, fmt(item.monto), item.referencia ?? '', getNotes(sid, item.id),
+      head: [['#', 'Fecha', 'Descripción', 'Monto', 'Referencia', 'Notas del contador']],
+      body: bankItems.map((item, i) => [
+        i + 1, item.fecha, item.descripcion, fmt(item.monto), item.referencia ?? '', getNotes(sid, item.id),
       ]),
       styles: { fontSize: 7, font: 'helvetica', cellPadding: 2.5 },
       headStyles: { fillColor: SIGNAL, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7 },
       alternateRowStyles: { fillColor: [248, 247, 244] },
       columnStyles: {
-        0: { cellWidth: 22 }, 1: { cellWidth: 80 }, 2: { cellWidth: 28, halign: 'right' },
-        3: { cellWidth: 35 }, 4: { cellWidth: 'auto' },
+        0: { cellWidth: 8, halign: 'center' }, 1: { cellWidth: 22 }, 2: { cellWidth: 72 },
+        3: { cellWidth: 28, halign: 'right' }, 4: { cellWidth: 35 }, 5: { cellWidth: 'auto' },
       },
       margin: { left: 12, right: 12 },
     })
@@ -550,16 +550,17 @@ export function exportPDF(session: SessionDetail) {
     doc.text('CFDIs sin conciliar', 12, 28)
     autoTable(doc, {
       startY: 31,
-      head: [['Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID']],
-      body: cfdiItems.map((item) => [
-        item.fecha, item.emisorNombre, item.emisorRfc, fmt(item.total), fmt(item.montoEsperado), item.uuid,
+      head: [['#', 'Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID']],
+      body: cfdiItems.map((item, i) => [
+        i + 1, item.fecha, item.emisorNombre, item.emisorRfc, fmt(item.total), fmt(item.montoEsperado), item.uuid,
       ]),
       styles: { fontSize: 7, font: 'helvetica', cellPadding: 2.5 },
       headStyles: { fillColor: [202, 138, 4], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7 },
       alternateRowStyles: { fillColor: [248, 247, 244] },
       columnStyles: {
-        0: { cellWidth: 22 }, 1: { cellWidth: 60 }, 2: { cellWidth: 28 },
-        3: { cellWidth: 28, halign: 'right' }, 4: { cellWidth: 28, halign: 'right' }, 5: { cellWidth: 'auto', fontSize: 6 },
+        0: { cellWidth: 8, halign: 'center' }, 1: { cellWidth: 22 }, 2: { cellWidth: 55 },
+        3: { cellWidth: 28 }, 4: { cellWidth: 28, halign: 'right' },
+        5: { cellWidth: 28, halign: 'right' }, 6: { cellWidth: 'auto', fontSize: 6 },
       },
       margin: { left: 12, right: 12 },
     })

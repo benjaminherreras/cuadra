@@ -53,7 +53,7 @@ function MatchedTable({ items }: { items: MatchedItem[] }) {
       <table className="w-full">
         <thead>
           <tr className="border-b border-stone-200">
-            {['Banco — Descripción', 'Emisor CFDI', 'Monto Banco', 'Monto CFDI', 'Esperado', 'Score'].map((h) => (
+            {['#', 'Banco — Descripción', 'Emisor CFDI', 'Monto Banco', 'Monto CFDI', 'Esperado', 'Score'].map((h) => (
               <th key={h} className="px-4 py-3 text-left font-mono text-[10px] text-stone-400 uppercase tracking-widest whitespace-nowrap">
                 {h}
               </th>
@@ -61,8 +61,11 @@ function MatchedTable({ items }: { items: MatchedItem[] }) {
           </tr>
         </thead>
         <tbody>
-          {items.map((m) => (
+          {items.map((m, i) => (
             <tr key={m.transaccionId} className="border-b border-stone-100 last:border-0 hover:bg-stone-50 transition-colors duration-150">
+              <td className="px-4 py-3 w-8">
+                <span className="font-mono text-[10px] text-stone-300 tabular-nums">{i + 1}</span>
+              </td>
               <td className="px-4 py-3">
                 <span className="font-mono text-xs text-stone-600">{m.bankDescripcion ?? m.transaccionId.substring(0, 12)}</span>
               </td>
@@ -130,11 +133,14 @@ function UnmatchedBankList({ items, sessionId }: { items: UnmatchedBankItem[], s
   }
   return (
     <div className="divide-y divide-stone-100">
-      {items.map((item) => (
+      {items.map((item, i) => (
         <div key={item.id} className="px-5 py-4 hover:bg-stone-50 transition-colors duration-150">
           <div className="flex items-start justify-between gap-4 mb-0.5">
             <div className="flex-1 min-w-0">
-              <div className="font-mono text-xs text-stone-700 font-semibold mb-1 truncate">{item.descripcion}</div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-mono text-[10px] text-stone-300 tabular-nums shrink-0">#{i + 1}</span>
+                <span className="font-mono text-xs text-stone-700 font-semibold truncate">{item.descripcion}</span>
+              </div>
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[10px] text-stone-400">{item.fecha}</span>
                 {item.referencia && (
@@ -191,11 +197,14 @@ function UnmatchedView({
           <div className="px-5 py-8 text-center font-mono text-xs text-stone-300">Sin CFDIs sin conciliar</div>
         ) : (
           <div className="divide-y divide-stone-100">
-            {cfdiItems.map((item) => (
+            {cfdiItems.map((item, i) => (
               <div key={item.id} className="px-5 py-4 hover:bg-stone-50 transition-colors duration-150">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="font-grotesk text-xs text-stone-700 font-semibold mb-1">{item.emisorNombre}</div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono text-[10px] text-stone-300 tabular-nums shrink-0">#{i + 1}</span>
+                      <span className="font-grotesk text-xs text-stone-700 font-semibold">{item.emisorNombre}</span>
+                    </div>
                     <div className="font-mono text-[10px] text-stone-400 break-all">{item.uuid.substring(0, 18)}…</div>
                     <div className="font-mono text-[10px] text-stone-400 mt-1">{item.fecha}</div>
                     <NoteCell noteKey={`cuadra_note_cfdi_${sessionId}_${item.id}`} />
