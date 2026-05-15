@@ -53,6 +53,11 @@ const banks: BankCard[] = [
   },
 ]
 
+const allBanks = [
+  'BBVA', 'Banorte', 'Santander', 'HSBC',
+  'Citibanamex', 'Scotiabank', 'Inbursa',
+  'BanBajío', 'Afirme', 'Multiva', 'Mifel',
+]
 
 export default function Protocol() {
   const sectionRef = useRef<HTMLElement>(null)
