@@ -273,7 +273,7 @@ export default function SessionDetail() {
       {/* Header — mantiene identidad de marca oscura */}
       <div className="border-b border-white/8 px-6 py-4 flex items-center justify-between sticky top-0 bg-black/95 backdrop-blur-xl z-40">
         <div className="flex items-center gap-4">
-          <span className="font-grotesk font-black text-xl text-white tracking-tight">CUADRA</span>
+          <Link to="/" className="font-grotesk font-black text-xl text-white tracking-tight hover:text-white/80 transition-colors duration-200">CUADRA</Link>
           <div className="w-px h-5 bg-white/15" />
           <span className="font-mono text-xs text-white/40 bg-white/5 border border-white/10 px-3 py-1 rounded-full">Sesión</span>
         </div>
