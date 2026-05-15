@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, AlertCircle, StickyNote } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, AlertCircle, StickyNote, FileSpreadsheet, FileText } from 'lucide-react'
 import { fetchSession, type SessionDetail as SessionDetailType, type MatchedItem, type UnmatchedBankItem, type UnmatchedCFDIItem } from '../lib/api'
+import { exportExcel, exportPDF } from '../lib/export'
 
 function formatCurrency(n: number) {
   return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n)
@@ -262,13 +263,33 @@ export default function SessionDetail() {
                 </span>
               </h1>
             </div>
-            <div className="bg-white border border-stone-200 rounded-[1.5rem] px-8 py-5 text-center shadow-sm">
-              <div className="font-mono text-xs text-stone-400 uppercase tracking-widest mb-1">Match Rate</div>
-              <div
-                className="font-mono text-5xl font-bold tabular-nums"
-                style={{ color: matchRate >= 90 ? '#16a34a' : matchRate >= 75 ? '#ca8a04' : '#E63B2E' }}
-              >
-                {matchRate}%
+            <div className="flex items-start gap-3">
+              {/* Botones de exportar */}
+              <div className="flex flex-col gap-2 pt-1">
+                <button
+                  onClick={() => exportExcel(session)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-colors duration-150 shadow-sm"
+                >
+                  <FileSpreadsheet size={14} />
+                  Exportar Excel
+                </button>
+                <button
+                  onClick={() => exportPDF(session)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-stone-800 hover:bg-black text-white font-mono text-xs font-bold transition-colors duration-150 shadow-sm"
+                >
+                  <FileText size={14} />
+                  Exportar PDF
+                </button>
+              </div>
+              {/* Match Rate */}
+              <div className="bg-white border border-stone-200 rounded-[1.5rem] px-8 py-5 text-center shadow-sm">
+                <div className="font-mono text-xs text-stone-400 uppercase tracking-widest mb-1">Match Rate</div>
+                <div
+                  className="font-mono text-5xl font-bold tabular-nums"
+                  style={{ color: matchRate >= 90 ? '#16a34a' : matchRate >= 75 ? '#ca8a04' : '#E63B2E' }}
+                >
+                  {matchRate}%
+                </div>
               </div>
             </div>
           </div>
