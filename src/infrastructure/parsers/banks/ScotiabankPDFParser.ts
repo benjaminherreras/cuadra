@@ -10,14 +10,15 @@ const MONTH_MAP: Record<string, number> = {
 // Full single-line transaction: "dd MMM[spaces]DESC[REF]$AMOUNT$SALDO"
 // e.g. "26 AGOSWEB TRANSF.INTERB SPEI00000000000000260825$300.00$819.46"
 // e.g. "27 AGO  SWEB PAGO TARJETA DE CREDITO00000000001340865897$437.49$381.97"
-const TX_FULL = /^(\d{2})\s+(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)\s*(.*?)(\$[\d,]+\.\d{2})(\$[\d,]+\.\d{2})\s*$/i
+// Also handles amounts without $ and with spaces between them.
+const TX_FULL = /^(\d{2})\s+(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)\s*(.*?)\s*(\$?[\d,]+\.\d{2})\s*(\$?[\d,]+\.\d{2})\s*$/i
 
 // Multi-line: date+desc but amounts arrive on a later line
 // e.g. "22 SEPTRASPASOS A OTROS BANCOS"
 const TX_PARTIAL = /^(\d{2})\s+(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)\s*(.+)$/i
 
-// Amounts-only continuation line: "$5.00$2,338.85" (two amounts glued together)
-const AMOUNTS_LINE = /^\s*(\$[\d,]+\.\d{2})(\$[\d,]+\.\d{2})\s*$/
+// Amounts-only continuation line: "$5.00$2,338.85" or "5.00 2,338.85"
+const AMOUNTS_LINE = /^\s*\$?([\d,]+\.\d{2})\s*\$?([\d,]+\.\d{2})\s*$/
 
 function toNum(s: string): number {
   return parseFloat(s.replace(/[$,]/g, '')) || 0
