@@ -267,7 +267,7 @@ export default function SessionDetail() {
               {/* Botones de exportar */}
               <div className="flex flex-col gap-2 pt-1">
                 <button
-                  onClick={() => exportExcel(session)}
+                  onClick={() => { void exportExcel(session) }}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-colors duration-150 shadow-sm"
                 >
                   <FileSpreadsheet size={14} />
