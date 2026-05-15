@@ -12,9 +12,9 @@ export default function Landing() {
       <Header />
       <main>
         <Hero />
-        <BankMarquee />
         <Features />
         <Philosophy />
+        <BankMarquee />
         <Protocol />
       </main>
       <Footer />
