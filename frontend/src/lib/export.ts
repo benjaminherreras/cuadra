@@ -366,11 +366,11 @@ export async function exportExcel(session: SessionDetail) {
   const cfdiItems = session.unmatchedCFDIDetail ?? []
   const ws4 = wb.addWorksheet('⚠ Sin Conciliar — CFDI', { properties: { tabColor: { argb: C.yellow } } })
   ws4.columns = [
-    { width: 12 }, { width: 38 }, { width: 16 }, { width: 16 }, { width: 16 }, { width: 38 },
+    { width: 12 }, { width: 38 }, { width: 16 }, { width: 16 }, { width: 16 }, { width: 34 }, { width: 44 },
   ]
   ws4.views = [{ state: 'frozen', ySplit: 2 }]
 
-  ws4.mergeCells('A1:F1')
+  ws4.mergeCells('A1:G1')
   const h4 = ws4.getCell('A1')
   h4.value = `⚠ CFDIs Sin Conciliar — ${session.banco}`
   h4.font = { name: 'Calibri', bold: true, size: 12, color: { argb: C.white } }
@@ -378,24 +378,37 @@ export async function exportExcel(session: SessionDetail) {
   h4.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }
   ws4.getRow(1).height = 28
 
-  headerRow(ws4, 2, ['Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID'], C.dark)
-  ws4.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 6 } }
+  headerRow(ws4, 2, ['Fecha', 'Emisor', 'RFC', 'Total CFDI', 'Monto Esperado', 'UUID', '📝 Notas del Contador'], C.dark)
+  ws4.autoFilter = { from: { row: 2, column: 1 }, to: { row: 2, column: 7 } }
+
+  // Columna de notas con fondo amarillo
+  const cfdiNoteHeader = ws4.getCell(2, 7)
+  cfdiNoteHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBBF24' } }
+  cfdiNoteHeader.font = { name: 'Calibri', bold: true, size: 10, color: { argb: C.dark } }
 
   cfdiItems.forEach((item, i) => {
     const r = 3 + i
     const isAlt = i % 2 === 1
     const bg = isAlt ? C.row_alt : C.white
-    const vals: (string | number)[] = [item.fecha, item.emisorNombre, item.emisorRfc, item.total, item.montoEsperado, item.uuid]
+    const note = localStorage.getItem(`cuadra_note_cfdi_${sid}_${item.id}`) ?? ''
+    const vals: (string | number)[] = [item.fecha, item.emisorNombre, item.emisorRfc, item.total, item.montoEsperado, item.uuid, note]
     vals.forEach((val, ci) => {
       const c = ws4.getCell(r, ci + 1)
       c.value = val
-      c.font = { name: 'Calibri', size: 10, color: { argb: C.dark } }
-      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
-      c.alignment = { vertical: 'middle', horizontal: ci >= 3 && ci <= 4 ? 'right' : 'left' }
-      c.border = { bottom: { style: 'hair', color: { argb: 'FFE5E7EB' } } }
+      c.font = { name: 'Calibri', size: 10, color: { argb: C.dark }, italic: ci === 6 }
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: ci === 6 ? C.note_bg : bg } }
+      c.alignment = {
+        vertical: 'middle',
+        horizontal: ci >= 3 && ci <= 4 ? 'right' : 'left',
+        wrapText: ci === 6,
+      }
+      c.border = {
+        bottom: { style: 'hair', color: { argb: 'FFE5E7EB' } },
+        ...(ci === 6 ? { left: { style: 'thin', color: { argb: C.note_border } } } : {}),
+      }
       if (ci >= 3 && ci <= 4) c.numFmt = '"$"#,##0.00'
     })
-    ws4.getRow(r).height = 18
+    ws4.getRow(r).height = note && note.length > 40 ? 32 : 18
   })
 
   // Guardar

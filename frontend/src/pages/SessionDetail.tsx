@@ -182,6 +182,10 @@ function UnmatchedView({
           <span className="font-mono text-xs text-stone-500 uppercase tracking-widest">
             Sin conciliar — CFDI ({cfdiItems.length})
           </span>
+          <div className="ml-auto flex items-center gap-1.5">
+            <StickyNote size={12} className="text-stone-400" />
+            <span className="font-mono text-[10px] text-stone-400">Notas visibles solo aquí</span>
+          </div>
         </div>
         {cfdiItems.length === 0 ? (
           <div className="px-5 py-8 text-center font-mono text-xs text-stone-300">Sin CFDIs sin conciliar</div>
@@ -190,12 +194,13 @@ function UnmatchedView({
             {cfdiItems.map((item) => (
               <div key={item.id} className="px-5 py-4 hover:bg-stone-50 transition-colors duration-150">
                 <div className="flex items-start justify-between gap-4">
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="font-grotesk text-xs text-stone-700 font-semibold mb-1">{item.emisorNombre}</div>
                     <div className="font-mono text-[10px] text-stone-400 break-all">{item.uuid.substring(0, 18)}…</div>
                     <div className="font-mono text-[10px] text-stone-400 mt-1">{item.fecha}</div>
+                    <NoteCell noteKey={`cuadra_note_cfdi_${sessionId}_${item.id}`} />
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <span className="font-mono text-sm font-bold text-yellow-600 tabular-nums whitespace-nowrap block">
                       {formatCurrency(item.total).replace('MX$', '$')}
                     </span>
